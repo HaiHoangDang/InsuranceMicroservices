@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PaymentService.Api\PaymentService.Api.csproj" />
-    <ProjectReference Include="..\PaymentService.Implementation\PaymentService.Implementation.csproj" />
+    <ProjectReference Include="..\PaymentService.Api\PaymentService.Implementation.csproj" />
+    <ProjectReference Include="..\PaymentService.Implementation\PaymentService.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

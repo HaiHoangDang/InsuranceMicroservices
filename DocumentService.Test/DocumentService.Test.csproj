@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -19,10 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DocumentService.Api\DocumentService.Api.csproj" />
     <ProjectReference Include="..\DocumentService.Implementation\DocumentService.Implementation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

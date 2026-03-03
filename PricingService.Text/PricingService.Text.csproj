@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PricingService.api\PricingService.Api.csproj" />
-    <ProjectReference Include="..\PricingService.Implementation\PricingService.Implementation.csproj" />
+    <ProjectReference Include="..\PricingService.api\PricingService.Implementation.csproj" />
+    <ProjectReference Include="..\PricingService.Implementation\PricingService.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
