@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace PaymentService.Test
 {
     public class UnitTest1
@@ -5,7 +7,6 @@ namespace PaymentService.Test
         [Fact]
         public void Test1()
         {
-
         }
     }
 }
