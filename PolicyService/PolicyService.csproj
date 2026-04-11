@@ -19,11 +19,15 @@
     </ItemGroup>
 
     <ItemGroup>
+		<PackageReference Include="RawRabbit.DependencyInjection.ServiceCollection" Version="2.0.0-rc5" />
+		<PackageReference Include="RawRabbit.Operations.Tools" Version="2.0.0-rc5" />
         <PackageReference Include="EasyNetQ" Version="7.8.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
         <PackageReference Include="NHibernate" Version="5.5.1" />
         <PackageReference Include="Npgsql" Version="8.0.3" />
         <PackageReference Include="Polly" Version="8.4.0" />
+        <PackageReference Include="RawRabbit.DependencyInjection.ServiceCollection" Version="2.0.0-rc5" />
+        <PackageReference Include="RawRabbit.Operations.Tools" Version="2.0.0-rc5" />
         <PackageReference Include="RestEase" Version="1.6.4" />
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
