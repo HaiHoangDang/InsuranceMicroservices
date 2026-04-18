@@ -31,7 +31,6 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddDiscoveryClient(Configuration);
         services.AddMvc()
             .AddNewtonsoftJson(opt => { opt.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto; });
 
@@ -43,6 +42,7 @@ public class Startup
         services.AddRabbitListeners();
         services.AddBackgroundJobs(Configuration.GetSection("BackgroundJobs").Get<BackgroundJobsConfig>());
         services.AddSwaggerGen();
+        services.AddDiscoveryClient(Configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +51,7 @@ public class Startup
         app.UseRouting();
         app.UseGlobalExceptionHandler(cfg => cfg.MapExceptions());
         if (!env.IsDevelopment()) app.UseHsts();
-
+        
         if (env.IsDevelopment())
         {
             app.UseSwagger();
@@ -63,5 +63,6 @@ public class Startup
         app.UseRabbitListeners(new List<Type> { typeof(PolicyCreated), typeof(PolicyTerminated) });
         app.UseBackgroundJobs();
         app.UseEndpoints(endpoints => endpoints.MapControllers());
+
     }
 }
