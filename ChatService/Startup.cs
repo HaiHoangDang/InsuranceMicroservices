@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using ChatService.Hubs;
 using ChatService.Messaging.RabbitMq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Steeltoe.Discovery.Client;
 using PolicyService.Api.Events;
 
@@ -36,15 +40,49 @@ public class Startup
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()
-                    .AllowAnyOrigin(); // 🔥 FIX CORS cho nhanh
+                    .WithOrigins(appSettingsSection.Get<AppSettings>().AllowedChatOrigins);
             }));
 
         services.AddMvc()
             .AddNewtonsoftJson();
 
-        // ❌ TẮT AUTH để tránh lỗi 401
-        // services.AddAuthentication(...)
-        // services.AddAuthorization()
+        var appSettings = appSettingsSection.Get<AppSettings>();
+        var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+        services.AddAuthentication(x =>
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(x =>
+        {
+            x.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateActor = false
+            };
+            x.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+
+                    if (!string.IsNullOrEmpty(accessToken) &&
+                        path.StartsWithSegments("/agentsChat"))
+                    {
+                        context.Token = accessToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+        services.AddAuthorization(_ => { });
 
         services.AddSignalR();
 
@@ -52,7 +90,6 @@ public class Startup
 
         services.AddRabbitListeners();
 
-        // ✅ Eureka vẫn giữ
         services.AddDiscoveryClient(Configuration);
 
         services.AddSwaggerGen();
@@ -61,8 +98,6 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseRouting();
-
-        // ✅ đăng ký Eureka
         app.UseDiscoveryClient();
 
         if (env.IsDevelopment())
@@ -77,11 +112,8 @@ public class Startup
         }
 
         app.UseCors("CorsPolicy");
-
-        // ❌ TẮT AUTH
-        // app.UseAuthentication();
-        // app.UseAuthorization();
-
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseHttpsRedirection();
 
         app.UseEndpoints(endpoints =>
